@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
 
         console.log('userId', userId);
         console.log('idToken', idToken);
-        
+
         const firebaseServerAppSettings = {
             authIdToken: idToken
         }
@@ -33,8 +33,11 @@ export async function middleware(request: NextRequest) {
             console.log('User is not logged in');
         }
 
-        const db = getFirestore(serverApp, 'transcriber-store');
-        const userRef = doc(db, "user-accounts", userId);
+        const databaseName = process.env.NEXT_PUBLIC_FIREBASE_DATABASE_NAME ?? 'DATABASE_NAME';
+        const collectionName = 'user-accounts';
+        
+        const db = getFirestore(serverApp, databaseName);
+        const userRef = doc(db, collectionName, userId);
         const userDoc = await getDoc(userRef);
         
         if (!userDoc.exists()) {
